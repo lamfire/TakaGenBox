@@ -21,6 +21,7 @@ import com.github.tvbox.osc.util.AES;
 import com.github.tvbox.osc.util.AdBlocker;
 import com.github.tvbox.osc.util.DefaultConfig;
 import com.github.tvbox.osc.util.HawkConfig;
+import com.github.tvbox.osc.util.LOG;
 import com.github.tvbox.osc.util.M3U8;
 import com.github.tvbox.osc.util.MD5;
 import com.github.tvbox.osc.util.VideoParseRuler;
@@ -34,6 +35,7 @@ import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -291,8 +293,22 @@ public class ApiConfig {
                 });
     }
 
+    public static boolean isJSON(String jsonString) {
+        try {
+            // 尝试解析为 JSONObject 或 JSONArray
+            new JSONObject(jsonString);
+        } catch (Exception e) {
+            try {
+                new JSONArray(jsonString);
+            } catch (Exception ex) {
+                return false; // 既不是 JSONObject 也不是 JSONArray
+            }
+        }
+        return true; // 是有效的 JSON
+    }
+
     private void parseJson(String apiUrl, File f) throws Throwable {
-        System.out.println("从本地缓存加载" + f.getAbsolutePath());
+        LOG.i("从本地缓存加载" + f.getAbsolutePath());
         BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         StringBuilder sb = new StringBuilder();
         String s = "";
@@ -304,7 +320,20 @@ public class ApiConfig {
     }
 
     private void parseJson(String apiUrl, String jsonStr) {
-
+        //如果是json什么也不做，非json,尝试base64解码
+        if(isJSON(jsonStr)){
+            LOG.i("发现JSON配置源,无需特殊处理." );
+        }else{
+            LOG.i("发现非JSON配置源，解码中..." );
+            // 尝试解码Base64
+            try {
+                byte[] decodedBytes = Base64.decode(jsonStr, Base64.DEFAULT);
+                jsonStr = new String(decodedBytes);
+                LOG.i("Base64解码成功..." );
+            }catch (Exception e){
+                LOG.e("Base64解码失败..." );
+            }
+        }
         JsonObject infoJson = new Gson().fromJson(jsonStr, JsonObject.class);
         // spider
         spider = DefaultConfig.safeJsonString(infoJson, "spider", "");
