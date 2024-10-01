@@ -16,7 +16,7 @@
         <item name="windowNoTitle">true</item>
         <!--        <item name="android:keepScreenOn">true</item>-->
         <!--        <item name="android:windowBackground">@drawable/app_bg</item>-->
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@drawable/app_laucher_bg</item>
     </style>
 
     <!-- Alternative Themes -->
