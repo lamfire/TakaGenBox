@@ -72,8 +72,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     lintOptions {
@@ -142,7 +142,7 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer-rtsp:1.3.1"
     implementation "androidx.media3:media3-datasource-rtmp:1.3.1"
     implementation 'androidx.media3:media3-common:1.3.1'
-    implementation "com.github.anilbeesetti.nextlib:nextlib-media3ext:0.7.1"
+    implementation "com.github.anilbeesetti.nextlib:nextlib-media3ext:0.6.1"
 
 
 
