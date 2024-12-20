@@ -28,6 +28,7 @@ jobs:
           sed -i '$a\RELEASE_KEY_PASSWORD=TVBoxOSC'         ./gradle.properties
       - name: Build With Gradle
         run: |
+          sudo apt install -y openjdk-17
           chmod +x gradlew
           ./gradlew assemblerelease --build-cache --parallel --daemon --warning-mode all
       - name: Run ProGuard
