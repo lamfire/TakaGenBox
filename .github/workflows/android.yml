@@ -31,10 +31,6 @@ jobs:
           sudo apt install -y openjdk-17
           chmod +x gradlew
           ./gradlew assemblerelease --build-cache --parallel --daemon --warning-mode all
-      - name: Run ProGuard
-        run: |
-          # Run ProGuard with default configuration
-          ./gradlew minifyRelease
       - name: Prepare App
         run: |
           mkdir -p ${{ github.workspace }}/apk/
@@ -44,5 +40,5 @@ jobs:
       - name: Upload App To Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: com.github.tvbox.wolong
+          name: com.github.tvbox.lamfire
           path: ${{ github.workspace }}/apk/*
