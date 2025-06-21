@@ -908,7 +908,7 @@ public class VodController extends BaseController {
                     int current = (int) mControlWrapper.getCurrentPosition();
                     int duration = (int) mControlWrapper.getDuration();
                     if (current < duration / 2) return;
-                    mPlayerConfig.put("et", current / 1000);
+                    mPlayerConfig.put("et", (duration - current) / 1000);
 
                     updatePlayerCfgView();
                     listener.updatePlayerCfg();
@@ -1133,7 +1133,7 @@ public class VodController extends BaseController {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if (et > 0 && (position / 1000) >= et) {
+            if (et > 0 && position + (et * 1000) >= duration) {
                 skipEnd = false;
                 listener.playNext(true);
             }
@@ -1339,8 +1339,8 @@ public class VodController extends BaseController {
             int step = Hawk.get(HawkConfig.PLAY_TIME_STEP, 5);
             int time = mPlayerConfig.getInt(type);
             time += step;
-            if (time > 30 * 10)
-                time = 0;          // 600 = 10 mins
+//            if (time > 300)
+//                time = 0;          // 600 = 10 mins
             mPlayerConfig.put(type, time);
 
 //            // takagen99: Reference FongMi to get exact opening skip time
@@ -1362,7 +1362,7 @@ public class VodController extends BaseController {
             int time = mPlayerConfig.getInt(type);
             time -= step;
             if (time < 0)
-                time = (30 * 10);
+                time = 0;
             mPlayerConfig.put(type, time);
 
 //            // takagen99: Reference FongMi to get exact ending skip time

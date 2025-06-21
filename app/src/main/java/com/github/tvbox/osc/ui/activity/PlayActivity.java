@@ -273,10 +273,8 @@ public class PlayActivity extends BaseActivity {
                 if (CacheManager.getCache(MD5.string2MD5(url)) == null) {
                     return skip;
                 }
-                long rec = (long) CacheManager.getCache(MD5.string2MD5(url));
-                if (rec < skip)
-                    return skip;
-                return rec;
+                //返回上次播放进度
+                return (long) CacheManager.getCache(MD5.string2MD5(url));
             }
         };
         mVideoView.setProgressManager(progressManager);
@@ -294,7 +292,9 @@ public class PlayActivity extends BaseActivity {
                     for (int i = 0; i < videoSegmentationURL.size() - 1; i++) {
                         if (videoSegmentationURL.get(i).equals(videoURL)) {
                             mVideoView.setPlayFromZeroPositionOnce(true);
-                            startPlayUrl(videoSegmentationURL.get(i + 1), new HashMap<>());//todo header
+                            String url =videoSegmentationURL.get(i + 1);
+                            CacheManager.delete(MD5.string2MD5(url), 0);
+                            startPlayUrl(url, new HashMap<>());//todo header
                             return;
                         }
                     }
@@ -315,7 +315,9 @@ public class PlayActivity extends BaseActivity {
                     for (int i = 1; i < videoSegmentationURL.size(); i++) {
                         if (videoSegmentationURL.get(i).equals(videoURL)) {
                             mVideoView.setPlayFromZeroPositionOnce(true);
-                            startPlayUrl(videoSegmentationURL.get(i - 1), new HashMap<>());//todo header
+                            String url = videoSegmentationURL.get(i - 1);
+                            CacheManager.delete(MD5.string2MD5(url), 0);
+                            startPlayUrl(url, new HashMap<>());//todo header
                             return;
                         }
                     }
@@ -345,6 +347,7 @@ public class PlayActivity extends BaseActivity {
                     autoRetryCount = 0;
                     mVodPlayerCfg.put("st", 0);
                     mVodPlayerCfg.put("et", 0);
+                    CacheManager.delete(MD5.string2MD5(videoURL), 0);
                     play(replay);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -1311,7 +1314,7 @@ public class PlayActivity extends BaseActivity {
         mVodInfo.playIndex++;
         mVodInfo.playGroup += mVodInfo.playIndex / mVodInfo.playGroupCount;
         mVodInfo.playIndex = mVodInfo.playIndex % mVodInfo.playGroupCount;
-        play(false);
+        play(true);
     }
 
     public void playPrevious() {
@@ -1335,7 +1338,11 @@ public class PlayActivity extends BaseActivity {
         } else {
             mVodInfo.playIndex--;
         }
-        play(false);
+        try {
+            mVodPlayerCfg.put("st", 0);
+            mVodPlayerCfg.put("et", 0);
+        }catch (Exception e){}
+        play(true);
     }
 
     private int autoRetryCount = 0;
@@ -1348,7 +1355,7 @@ public class PlayActivity extends BaseActivity {
         }
         if (autoRetryCount < 1) {
             autoRetryCount++;
-            play(false);
+            play(true);
             return true;
         } else {
             autoRetryCount = 0;
@@ -1395,6 +1402,7 @@ public class PlayActivity extends BaseActivity {
         progressKey = mVodInfo.sourceKey + mVodInfo.id + mVodInfo.playFlag + mVodInfo.getplayIndex();
         //重新播放清除现有进度
         if (reset) {
+            CacheManager.delete(MD5.string2MD5(videoURL), 0);
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
             CacheManager.delete(MD5.string2MD5(subtitleCacheKey), "");
         }
