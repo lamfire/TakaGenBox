@@ -4,11 +4,20 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.yanzhenjie.andserver'
 
 def static buildTime() {
-    return new Date().format("yyyyMMdd_HHmm", TimeZone.getTimeZone("GMT+08:00"))
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+08:00"))
 }
 
 android {
     compileSdk 34
+
+    signingConfigs {
+        release {
+            storeFile file(project.hasProperty('KEYSTORE_FILE') ? KEYSTORE_FILE : 'sign-key.jks')
+            storePassword project.hasProperty('KEYSTORE_PASSWORD') ? KEYSTORE_PASSWORD : ''
+            keyAlias project.hasProperty('KEY_ALIAS') ? KEY_ALIAS : ''
+            keyPassword project.hasProperty('KEY_PASSWORD') ? KEY_PASSWORD : ''
+        }
+    }
 
     defaultConfig {
         applicationId 'com.github.tvbox.osc.tk'
@@ -33,7 +42,7 @@ android {
         release {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             minifyEnabled true
-
+            signingConfig signingConfigs.release
         }
     }
     flavorDimensions +=[ "abi","brand" ]
@@ -55,18 +64,12 @@ android {
             //通用版本
             dimension = "brand"
         }
-
-        hisense {
-            //海信的
-            applicationId 'com.github.hisense.osc.tk'
-            dimension = "brand"
-        }
     }
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach { output ->
             def flavorNames = variant.productFlavors.collect { it.name }.join('-')
             // 构建自定义文件名
-            def fileName = "TVBox_${variant.buildType.name}-${flavorNames}.apk"
+            def fileName = "TVBox-${variant.buildType.name}-${flavorNames}-${buildTime()}.apk"
             outputFileName = fileName
         }
     }
@@ -87,6 +90,7 @@ android {
 
     lint {
         disable 'UnsafeOptInUsageError'
+        disable 'ExpiredTargetSdkVersion'
     }
 }
 

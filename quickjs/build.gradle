@@ -9,6 +9,11 @@ android {
         minSdk 18
         targetSdk 28
     }
+
+    lint {
+        disable 'UnsafeOptInUsageError'
+        disable 'ExpiredTargetSdkVersion'
+    }
 }
 
 dependencies {
