@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
@@ -121,6 +122,7 @@ public class AndroidMediaPlayer extends AbstractPlayer implements MediaPlayer.On
             } else {
                 mMediaPlayer.seekTo((int) time);
             }
+            Log.i("seekTo",mMediaPlayer.getClass().getName());
         } catch (IllegalStateException e) {
             mPlayerEventListener.onError(-1, PlayerHelper.getRootCauseMessage(e));
         }

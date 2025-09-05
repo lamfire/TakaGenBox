@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
@@ -128,6 +129,7 @@ public class IjkPlayer extends AbstractPlayer implements IMediaPlayer.OnErrorLis
     public void seekTo(long time) {
         try {
             mMediaPlayer.seekTo((int) time);
+            Log.i("seekTo",mMediaPlayer.getClass().getName());
         } catch (IllegalStateException e) {
             mPlayerEventListener.onError(-1, PlayerHelper.getRootCauseMessage(e));
         }

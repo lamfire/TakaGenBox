@@ -3,8 +3,11 @@ package xyz.doikki.videoplayer.controller;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+
+import xyz.doikki.videoplayer.util.L;
 
 /**
  * 此类的目的是为了在ControlComponent中既能调用VideoView的api又能调用BaseVideoController的api，
@@ -18,6 +21,7 @@ public class ControlWrapper implements MediaPlayerControl, IVideoController {
     public ControlWrapper(@NonNull MediaPlayerControl playerControl, @NonNull IVideoController controller) {
         mPlayerControl = playerControl;
         mController = controller;
+        Log.i("ControlWrapper",mPlayerControl.getClass().getName());
     }
     
     @Override
@@ -43,6 +47,7 @@ public class ControlWrapper implements MediaPlayerControl, IVideoController {
     @Override
     public void seekTo(long pos) {
         mPlayerControl.seekTo(pos);
+        Log.i("ControlWrapper","seekTo - " + mPlayerControl.getClass().getName());
     }
 
     @Override

@@ -182,6 +182,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
         if (mMediaPlayer == null)
             return;
         mMediaPlayer.seekTo(time);
+        Log.i("seekTo",mMediaPlayer.getClass().getName());
     }
 
     @Override
