@@ -1339,16 +1339,10 @@ public class VodController extends BaseController {
             int step = Hawk.get(HawkConfig.PLAY_TIME_STEP, 5);
             int time = mPlayerConfig.getInt(type);
             time += step;
-//            if (time > 300)
-//                time = 0;          // 600 = 10 mins
+            if (time > 300 ){ // 最大跳转时间300秒
+                time = 0;
+            }
             mPlayerConfig.put(type, time);
-
-//            // takagen99: Reference FongMi to get exact opening skip time
-//            int current = (int) mControlWrapper.getCurrentPosition();
-//            int duration = (int) mControlWrapper.getDuration();
-//            if (current > duration / 2) return;
-//            mPlayerConfig.put("st", current / 1000);
-
             updatePlayerCfgView();
             listener.updatePlayerCfg();
         } catch (JSONException e) {
@@ -1362,15 +1356,8 @@ public class VodController extends BaseController {
             int time = mPlayerConfig.getInt(type);
             time -= step;
             if (time < 0)
-                time = 0;
+                time = 300;
             mPlayerConfig.put(type, time);
-
-//            // takagen99: Reference FongMi to get exact ending skip time
-//            int current = (int) mControlWrapper.getCurrentPosition();
-//            int duration = (int) mControlWrapper.getDuration();
-//            if (current < duration / 2) return;
-//            mPlayerConfig.put("et", (duration - current) / 1000);
-
             updatePlayerCfgView();
             listener.updatePlayerCfg();
         } catch (JSONException e) {
