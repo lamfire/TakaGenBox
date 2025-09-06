@@ -5,6 +5,7 @@ import static com.github.tvbox.osc.util.RegexUtils.getPattern;
 import androidx.media3.common.util.UriUtil;
 
 import com.github.tvbox.osc.base.App;
+import com.orhanobut.hawk.Hawk;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -38,13 +39,19 @@ public class M3U8 {
     public static String purify(String tsUrlPre, String m3u8content) {
         long start = System.currentTimeMillis();
         currentAdCount = 0;
-        if (null == m3u8content || m3u8content.length() == 0) return null;
-        if (!m3u8content.startsWith("#EXTM3U")) return null;
-        String result = removeMinorityUrl(tsUrlPre, m3u8content);
-        if (result != null) return result;
-        result = get(tsUrlPre, m3u8content);
+        String result = get(tsUrlPre, m3u8content);
+
+        // 如果开启了广告过滤
+        if (Hawk.get(HawkConfig.VIDEO_PURIFY, true)){
+            if (null == m3u8content || m3u8content.length() == 0) return null;
+            if (!m3u8content.startsWith("#EXTM3U")) return null;
+            String removed = removeMinorityUrl(tsUrlPre, m3u8content);
+            if(removed != null){
+                result = removed;
+            }
+        }
         long cost = System.currentTimeMillis() - start;
-        LOG.i("echo-fixAdM3u8Ai 耗时：" + cost + "ms");
+        LOG.i("fixAd-M3u8Ai 耗时：" + cost + "ms");
         return result;
     }
 
