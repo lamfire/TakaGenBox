@@ -3,7 +3,8 @@
 *.aar
 *.ap_
 *.aab
-
+.idea
+.vscode
 proguardMapping.txt
 
 # Files for the ART/Dalvik VM
