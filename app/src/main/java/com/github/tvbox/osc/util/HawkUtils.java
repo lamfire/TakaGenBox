@@ -24,7 +24,7 @@ public class HawkUtils {
     private static final String DANMU_COLOR = "danmu_color";
 
     public static boolean getDanmuOpen() {
-        return Hawk.get(DANMU_OPEN, true);
+        return Hawk.get(DANMU_OPEN, false);
     }
 
     public static void setDanmuOpen(boolean danmuOpen) {
